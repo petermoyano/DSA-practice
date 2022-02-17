@@ -35,7 +35,22 @@ function isSubsequence(arr1, arr2){
     }
     return false
 }
+/* Realized that the second part of my code (line 25-36) actually turns the first lines unnecessary */
 
+function isSubsequence2(seqArr, subSeqArr){
+    let idx = 0;
+    const checkArr = [];
+    for(let num of seqArr){
+        if(num === subSeqArr[idx]){
+            checkArr.push(num);
+            idx ++;
+        }
+    }
+    if(checkArr.length === subSeqArr.length){
+        return true
+    }
+    return false
+}
 
 
 console.log(isSubsequence(arr1, arr2));
