@@ -1,22 +1,6 @@
-/*  
-    romanNumeral("III") => 3
-    romanNumeral("XIV") => 14 (10 + 4)
-    romanNumeral("XLIX") => 49 ( )
-    romanNumeral("CCXLIX") => 249
-    romanNumeral("CCCXLIX") => 349
-    romanNumeral("DXLIX") => 549
-    romanNumeral("XXXII") => 32 (10 +10+10+1+1)
-    romanNumeral("XLII") => 42 50 - 10
-    romanNumeral("LXVII") => 67 (50+10+7)
-    romanNumeral("XCIV") => 94 (10 - 100 + 4)
-    romanNumeral("CMXCIV") => 994 
-    romanNumeral("CM") => |100 - 1000| = 900
-    romanNumeral("MMMCMXCIV") = 3994
-    1-3999
-
-*/
-/* STEP 1: Split string into components: Analize letter to the right of current letter:
-if it's equal or bigger continue, else extract letters at that index */
+/* 
+Split string into thousends, hundreds, tens and units: Analize letter to the right of current letter:
+if it's equal or bigger continue, else extract*/
 
 /* I -> 1
 II -> 1+1
@@ -44,6 +28,7 @@ const patterns = {
 function romanNumeral(str) {
     let count = 0;
     let components = [];
+    // Divide roman into thousends, hundreds, tens, units...
     for (let i = 0; i < str.length; i++) {
         if (patterns[str[i]] > patterns[str[i + 1]] || i === str.length - 1) { /* left of the || is to add the last substring of str */
             components.push(str.substring(i - count, i + 1));
@@ -51,8 +36,9 @@ function romanNumeral(str) {
         }
         count++;
     }
-    /* At this point for CCXLIX components would be => [ 'CC', 'XL', 'IX' ] */
+    /* At this point for 'CCXLIX' components would be => [ 'CC', 'XL', 'IX' ] */
     let total = 0;
+    // Locate position of larger roman number to either add or substract its surroundings
     for (let element of components) {
         let largerRomanNum = element[0];
         for (let RomanNum of element) {
@@ -61,10 +47,12 @@ function romanNumeral(str) {
             }
         }
         let sum = 0;
+        // If largerRomanNum is at idx of 0, that means we have to add 
         if (element.indexOf(largerRomanNum) === 0) {
             for (let RomanNum of element) {
-                sum += patterns[RomanNum]
+                sum += patterns[RomanNum];
             }
+            // largerRomanNum isn't at idx of 0, that means it is only 2 Roman nums, and we have to substract idx of 0 
         } else {
             sum += patterns[largerRomanNum] - patterns[element[0]];
         }
