@@ -1,76 +1,51 @@
-/* 
-Split string into thousends, hundreds, tens and units: Analize letter to the right of current letter:
-if it's equal or bigger continue, else extract*/
+//Write a function that takes a positive numeger and turns it numo a roman num.
+// 3 --> III
+// 9 --> IX
+// 99 --> (100-10)+(10-1) = (C-X)+(X-I) = XC+IX = XCIX
+// 125 --> 100 + 20 + 5 = C + XX + V
+// The pattern is to separate thousends, from hundreds, from tens, from ones
+// Then turn each into romans and add that to a string, in that order
 
-/* I -> 1
-II -> 1+1
-IV -> 5-1
-IIX -> 10 -2
-400 -> CD
-39 -> CCCXCVIII       300 - 90 - 8 */
-/* C => count = 0
-C => count = 1
-C => count = 2 => str.slice(2-2, 3) 
-X => count = 1
-C => => str.subString(4 - 2, 5)
-*/
+function numToRoman(int) {
 
-const patterns = {
-        I: 1,
-        V: 5,
-        X: 10,
-        L: 50,
-        C: 100,
-        D: 500,
-        M: 1000
+    const hundreds = ['C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM'];
+    const tens = ['X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC'];
+    const ones = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+
+    let roman = '';
+    let num = int;
+    // separate thousends
+    while (num >= 1000) {
+        roman += 'M';
+        num -= 1000;
     }
-    /* CCCXCVIII */
-function romanNumeral(str) {
-    let count = 0;
-    let components = [];
-    // Divide roman into thousends, hundreds, tens, units...
-    for (let i = 0; i < str.length; i++) {
-        if (patterns[str[i]] > patterns[str[i + 1]] || i === str.length - 1) { /* left of the || is to add the last substring of str */
-            components.push(str.substring(i - count, i + 1));
-            count = -1;
-        }
-        count++;
+    // separate hundreds
+    if (num > 99) {
+        roman += hundreds[Math.floor(num / 100) - 1]; 
+        num -= Math.floor(num / 100) * 100;
     }
-    /* At this point for 'CCXLIX' components would be => [ 'CC', 'XL', 'IX' ] */
-    let total = 0;
-    // Locate position of larger roman number to either add or substract its surroundings
-    for (let element of components) {
-        let largerRomanNum = element[0];
-        for (let RomanNum of element) {
-            if (patterns[largerRomanNum] < patterns[RomanNum]) {
-                largerRomanNum = RomanNum;
-            }
-        }
-        let sum = 0;
-        // If largerRomanNum is at idx of 0, that means we have to add 
-        if (element.indexOf(largerRomanNum) === 0) {
-            for (let RomanNum of element) {
-                sum += patterns[RomanNum];
-            }
-            // largerRomanNum isn't at idx of 0, that means it is only 2 Roman nums, and we have to substract idx of 0 
-        } else {
-            sum += patterns[largerRomanNum] - patterns[element[0]];
-        }
-        total += sum;
+    // separate tens
+    if (num > 9) {
+        roman += tens[Math.floor(num / 10) - 1]; // 12/10 = 1.2 => floors to 1 => tens[0] = X 
+        num -= (Math.floor(num / 10)) * 10; // 12/10 = 1.2 => floors to 1 so 1 * 10 => num -= 10
     }
-    return console.log(`${str} converts to ${total}`);
+    // separate ones
+    if(num === 0){
+        return `${int} converts to ${roman}`
+    }else{
+        roman += ones[num - 1];
+    }
+    
+    return `${int} converts to ${roman}`;
 }
-romanNumeral("III");
-romanNumeral("XIV");
-romanNumeral("XLIX");
-romanNumeral("CCXLIX");
-romanNumeral("CCCXLIX");
-romanNumeral("DXLIX");
-romanNumeral("XXXII");
-romanNumeral("XLII");
-romanNumeral("LXVII");
-romanNumeral("XCIV");
-romanNumeral("CMXCIV");
-romanNumeral("CM");
-romanNumeral("MMMCMXCIV");
-romanNumeral("MMDXXIV");
+console.log(numToRoman(3));
+console.log(numToRoman(12));
+console.log(numToRoman(125));
+console.log(numToRoman(459));
+console.log(numToRoman(759));
+console.log(numToRoman(998));
+console.log(numToRoman(1000));
+console.log(numToRoman(1280));
+console.log(numToRoman(2648));
+console.log(numToRoman(3597));
+
